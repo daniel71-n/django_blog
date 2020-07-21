@@ -1,0 +1,48 @@
+{% extends "basedoc.html" %}
+
+
+{% block h1 %} {{post.title}} {% endblock h1 %}
+{% block subh %} 
+| Category : {{post.section}} <br>
+| by {{post.author}} -- {{post.publication_date}} <br>
+| {{post.get_reading_length}}
+<br>
+<br>
+<p>{%for tag in post.tags.all%} <a href="{{tag.get_absolute_url}}"><a href="{{ tag.get_absolute_url }}"><button type="button" class="btn btn-outline-dark btn-sm">{{tag}}</button></a>{%endfor%} <br>
+ 
+
+{% endblock subh %}
+
+
+{% block body %}
+<div class="row justify-content-center">
+      <div class="col-12 detail-div col-sm-9">
+	      <p>{{post.body_text|linebreaks}}</p>
+      </div>
+</div>
+
+<!--the url tag searches for and matches the 'name' argument passed to the path function in the url.py file - one of the files-->
+
+<b><hr></b>
+<hr>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-sm-6">
+     <h3><button class="btn btn-lg btn-outline-dark" id="comment-toggle">{{post.get_comments_num}} Comments</button></h3>
+
+{%for comment in post.comments_set.all%} 
+<div class="row justify-content-center show-hide">
+	<div class="col-12 col-sm-9 comment-div"><b>{{comment.author}}</b><hr><i>{{comment.comment}}</i>
+<!--closing the divs for the individual comments-->
+</div>
+</div>
+
+{%endfor%}
+
+<br>
+<!--closing the divs for the comment section-->
+</div>
+</div>
+
+
+{%endblock body%}

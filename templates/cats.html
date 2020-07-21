@@ -1,0 +1,22 @@
+{% extends 'basedoc.html' %}
+
+
+{%block h1%} Category: [{{cat.cat_name}}] {%endblock h1%}
+{%block subh%} Below is a list of posts that are part of this category. {%endblock subh%}
+
+{%block body%}
+
+<ul>
+	{%for post in cat.post_set.all%} 
+	<li>
+		<a href="{{post.get_absolute_url}}">{{post}}</a> 
+	
+	</li>
+{%endfor%}
+</ul>
+{%endblock body%}
+
+{%block sidebar%}
+{%endblock sidebar%}
+{% block comments_section %}
+{%endblock comments_section %}

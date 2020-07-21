@@ -1,0 +1,51 @@
+{% extends "basedoc.html" %}
+
+{% block h1 %} Homepage {% endblock h1 %}
+{% block subh %} Below are some of the most recent posts{% endblock subh %}
+
+
+{% block body %}
+
+<div class="row justify-content-center">
+      <div class="col-12 col-sm-6">
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+		<a href="{{ request.path }}?page={{ page_obj.previous_page_number }}"><button class="btn btn-sm btn-outline-dark">previous</button></a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+		<a href="{{ request.path }}?page={{ page_obj.next_page_number }}"><button class="btn btn-sm btn-outline-dark">next</button></a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+      </div>
+</div>
+
+
+{% for p in post_list %}
+<div class="row justify-content-center">
+      <div class="col-12 col-sm-6 homecards">
+	      <h2> <a href="{{p.get_absolute_url}}">{{ p.title }}</a></h2>
+	      <p> by {{ p.author }} | {{ p.publication_date }} | {{ p.get_reading_length }}</h3>
+      	      <br>
+	      <p> {{ p.body_text|truncatewords:55}} </p>
+	      <hr>
+	      <p> {% for item in p.tags.all%} <a href="{{ item.get_absolute_url }}"><button type="button" class="btn btn-dark btn-sm">{{item}}</button></a> {% endfor %}</p>
+      </div>
+</div>
+
+<!--<p> Tags: {% for item in p.tags.all %} <b>&middot;</b><a href="{{ item.get_absolute_url }}">{{item}}</a> {% endfor %}</p>-->
+
+{% endfor %}
+<!--the url tag searches for and matches the 'name' argument passed to the path function in the url.py file - one of the files-->
+
+
+
+{% endblock body %}
+
+

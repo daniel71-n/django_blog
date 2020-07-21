@@ -1,0 +1,32 @@
+{% extends "basedoc.html" %}
+
+{% block h1 %} Post Categories {% endblock h1 %}
+{% block subh %} {% endblock subh %}
+
+
+{% block body %}
+
+<!--
+for cat in categories: for each category title
+if cat.post_set.all : if the category has any posts associated with it, do all the below. Otherwise, if it's empty, don't even display the category title
+for assoc_post in cat.post_set.all : format each assoiciated post into an unorganized list
+-->
+
+<div style="border-left: 4px #1F540E solid; padding-left:2em;">     
+{%for cat in categories %}
+
+{%if cat.post_set.all%} 
+<h2><a href="{{cat.get_absolute_url}}">{{ cat }}</a></h2><hr>
+<ul class="ul-custom">{%for associated_post in cat.post_set.all%} <li><a href="{{associated_post.get_absolute_url}}">{{ associated_post}}</a></li>{% endfor %} </ul>
+	<p><b>&middot;</b>&nbsp;&nbsp;&nbsp;&nbsp;<b>&middot;</b>&nbsp;&nbsp;&nbsp;&nbsp;<b>&middot;</b>
+<br>
+
+{%endif%}
+
+{% endfor %}
+</div>
+
+{% endblock body %}
+
+
+

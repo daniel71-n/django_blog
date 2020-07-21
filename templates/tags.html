@@ -1,0 +1,23 @@
+{% extends 'basedoc.html' %}
+
+
+{%block h1%} Tag: [{{tag.tag_name}}] {%endblock h1%}
+{%block subh%} Below is a list of posts associated with this specific tag {%endblock subh%}
+
+{%block body%}
+
+<ul>
+	{%for post in tag.post_set.all%} 
+	<li>
+		<a href="{{post.get_absolute_url}}">{{post}}</a> in |*<a href="{{post.section.get_absolute_url}}">{{post.section}}</a>*|
+	
+	
+	</li>
+{%endfor%}
+</ul>
+{%endblock body%}
+
+{%block sidebar%}
+{%endblock sidebar%}
+{% block comments_section %}
+{%endblock comments_section %}

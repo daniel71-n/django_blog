@@ -1,0 +1,26 @@
+{%extends 'basedoc.html' %}
+
+
+
+{%block h1%} Search Results {%endblock h1%}
+{%block subh%} Below are the results of your search query.<br> 
+|&middot;{{search_results.count}} found&middot;|
+{%endblock subh%}
+
+{%block body%}
+
+<ul>
+        {%for found in search_results%}
+        <li>
+		<a href="{{found.get_absolute_url}}">{{found.title}}</a><br>
+
+        </li>
+{%endfor%}
+</ul>
+{%endblock body%}
+
+{%block sidebar%}
+{%endblock sidebar%}
+{% block comments_section %}
+{%endblock comments_section %}
+}
