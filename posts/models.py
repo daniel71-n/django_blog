@@ -4,11 +4,11 @@ from tags.models import Tags
 # Create your models here.
 
 
-class TextField_keep_whitespace(models.TextField):
+class NonStrippingTextField(models.TextField):
     """A TextField that does not strip whitespace"""
     def formfield(self, **kwargs):
         kwargs['strip'] = False
-        return super(TextField_keep_whitespace, self).formfield(**kwargs)
+        return super(NonStrippingTextField, self).formfield(**kwargs)
 
 
 class Commenter(models.Model):
