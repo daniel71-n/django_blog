@@ -4,43 +4,20 @@ from tags.models import Tags
 # Create your models here.
 
 
-
-#each class generally represents a table; so class Post amounts to a db table named Post
-#each field is a class attribute (not instance attribute), e.g. CharField. A field represents a db table column
-#each instance of the class represents a table row. 
-
-#Foreign Key example
-#user = models.ForeignKey(
-#    User,
-#    models.SET_NULL,
-#    blank=True,
-#    null=True,
-#)
-
-
-
-################################################################################-------POST----------####################################################################################
-
-
-
-
-
-class NonStrippingTextField(models.TextField):
-    """A TextField that does not strip whitespace at the beginning/end of
-    it's value.  Might be important for markup/code."""
-
+class TextField_keep_whitespace(models.TextField):
+    """A TextField that does not strip whitespace"""
     def formfield(self, **kwargs):
         kwargs['strip'] = False
-        return super(NonStrippingTextField, self).formfield(**kwargs)
+        return super(TextField_keep_whitespace, self).formfield(**kwargs)
 
 
 class Commenter(models.Model):
     commenter_email= models.EmailField(
-            help_text="The email address is only used for computing a username, which is given by eveything before the '@' (ampersand) sign. That makes it more likely that the username will be unique.")
+            help_text="The email address is only used for computing a username, which is given by eveything before the '@' (ampersand) sign. That makes it more likely that the username will be unique withou having to think of an original username.")
     # blank=False and Null=False; the field will be required in html forms - you can't submit a comment otherwise
     def __str__(self):
         """printable name"""
-        return self.commenter_email.split('@')[0]   #discard the email provider DNS part (i.e. everything after and including '@') 
+        return self.commenter_email.split('@')[0]   #discard the email-provider DNS part (i.e. everything after and including '@') 
                                                     #and display everything coming before that as a username for the author of the comment
 
 
@@ -49,19 +26,11 @@ class Commenter(models.Model):
 
 
 class Category(models.Model):
-    cat_name = models.CharField("Category Name",  # make cat_name the column with the pk rather than an automatically created integer pk 
+    cat_name = models.CharField("Category Name",   
             max_length=40,                        # the positional first argument (optional) sets an arbitrary verbose name to be displayed (e.g. on the Admin page) 
             #primary_key=True, 
             help_text="The name of a Section/Category you want to create for articles to be nested under. Useful for grouping related articles together")
-   # nested_under = models.ForeignKey('self', 
-            #on_delete=models.SET_NULL, 
-            #blank=True, null=True, 
-            #help_text="If this section is supposed to be part of a larger category, that larger category should appear here")
-    
-   # he bested_under field can be empty (i.e. the item is not to be nested under anything)
-   # elf-reference; this is for limiting purposes - this column can now only be filled with values that already exist in cat_name
-   # if there's any value in nested_under, then in html this cat title should appear as a subtitle (h-1) under the associated cat_name
-   # note that self is here in quotation marks. Using self unquoted will result in an "NameError: name 'self' is not defined" error
+   
     def __str__(self):
         """'pretty' (printable) format - e.g. the way it shows up in the admin page"""
         return self.cat_name
@@ -80,19 +49,15 @@ class Post(models.Model):
   
 
     publication_date = models.DateField( # check that this is a datefield before storage in the DB 
-            auto_now_add=True      # Automatically set the field to now when the object is first created.
+            auto_now_add=True      # Automatically set the field to today when the object is first created.
             )
 
-
-                                        #the section field is a foreign key to a section table. This is used to determine whether the article should appear nested under a h1, h2, h3 or not nested under anything.
+    #the section field is a foreign key to a 'section' table. Articles will then be displayed on the page under the respective cateegory title
     section = models.ForeignKey(
             'Category',
             on_delete=models.CASCADE,
             default="Etc")
             
-             #the section field can be null. If there's no section there, then the article title won't be nested under any category title
-            
-
     tags = models.ManyToManyField(Tags)
     
 
@@ -104,11 +69,7 @@ class Post(models.Model):
 
         return reading_length
 
-
-    def get_latest_post(self):
-        return Post.objects.order_by('-publication_date')[0]
-
-
+ 
     def __str__(self):     # if you don't set a str operator overloading method, the name of the post on the admin page will be post.object
         return "{}".format(self.title)
 
@@ -117,26 +78,9 @@ class Post(models.Model):
         return "/posts/{}/".format(self.id)
 
     def get_comments_num(self):
-        """return how many comments are associated with this post"""  # this should use the objects_set to count how many references to this (the post) as teh foreign key there are, i.e. 
-                                                                     # how many comments are associated with this post
+        """return how many comments are associated with this post"""                                                           
         num=len(self.comments_set.all())
         return num
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -152,25 +96,16 @@ class Comments(models.Model):
 
     author = models.ForeignKey('Commenter', 
             on_delete=models.CASCADE,
-            help_text="The author of the comment. The user is prompted for their email address before submitting a comment, with a username being computer out of the address")
-                                               #django already offers a built-in user model, so I won't redo that. This doesn't point to a user (that can sign up and in and out) 
-                                               #--there's only one user (the writer of the blog)--, but to commenter 'accounts (they aren't really accounts, but only server to identify the author of the comment)                                               #to write a comment, one should be required to write down their email. This serves as an identifier. they won't be prompted for anything else - e.g. username or
-                                               #password, because they aren't needed since it's not a user account.
+            help_text="The author of the comment. The commenter has to fill out an email address field before submitting a comment, with a username being computed from the address by discarding everything after and including the ampersand")
+#--there's only one user (the writer of the blog)--; commenters don't get accounts when inputting their email when submitting a comment
+# it only server to compute the username to be shown along with the comment; --> email: someuser@someemailprovider.com = username: someuser
+
 
     def __str__(self):
         """printable name"""
         return "{} : {} [...] by {}".format(self.associated_post, self.comment[:15], self.author) 
-    # the title of the associated article + the first 15 characters of the comment + [..] to indicate only part of the comment is displayed here
-################################################################################-------POST----------####################################################################################
+    # compute a string from the title of the associated article + the first 15 characters of the comment + [..],to indicate only part of the comment
 
 
 
 
-
-
-
-
-
-################################################################################-------POST----------####################################################################################
-
-################################################################################-------POST----------####################################################################################

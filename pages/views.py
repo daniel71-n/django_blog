@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import TemplateView, ListView
 from posts.models import Post,Category
-from django.db.models import Q
+
 
 
 

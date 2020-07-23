@@ -11,11 +11,10 @@ admin.site.register(Category)
 admin.site.register(Comments)
 
 #The TextField strips whitespace, with the result that all text will have no line breaks and whatnot when displayed to the user;
-#to straighten that out
-
-class Keep_Whitespace(ModelForm):
+#to straighten that out, the strip parameter needs to be set to False
+class KeepWhitespace(ModelForm):
     def __init__(self, *args, **kwargs):
-        super(Keep_WhiteSpace, self).__init__(*args, **kwargs)
+        super(KeepWhiteSpace, self).__init__(*args, **kwargs)
         self.fields['body_text'].strip = False  #make it so that text input into the body_text field keeps the whitespace intact and doesn't strip it
 
     class Meta:
@@ -23,12 +22,5 @@ class Keep_Whitespace(ModelForm):
         fields = "__all__"
 
 
-
-# definining a new admin class
-class PostAdmin(admin.ModelAdmin):
-    pass
-
-# Registering it with the associated model (i.e. 'Post')
-#admin.site.register(Post, PostAdmin)
 
 
