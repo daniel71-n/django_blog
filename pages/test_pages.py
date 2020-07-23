@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -6,7 +5,7 @@ from posts.models import Category, Post
 
 
 
-#methods needs to start with "test*" to run, e.g. test_about_page_get_status_code
+#methods need to start with "test*" to run, e.g. test_about_page_get_status_code
 # some_method() won't work as the name is wrong
 
 #the paths need to both start and end with a '/', otherwise you'll get a 404
@@ -18,23 +17,23 @@ from posts.models import Category, Post
 class HomePageTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Category.objects.create(cat_name="Random")  # this is necessary as it's required in the section foreign key field, so it has to be set up first
+        Category.objects.create(cat_name="Random")  # this is necessary as it's required in the 'section' foreign key field, so it has to be set up first
         User.objects.create(username="someuser", password="somepassword")
                
         #set up n>paginate_by post objects to check that pagination works
-        for i in range(1,8):
+        for i in range(1,8):   # pagination is for 5 items per page; set up 7 Post objects
             Post.objects.create(title="Post_no{}".format(i), body_text="this is some text", author=User.objects.get(id=1), section=Category.objects.get(id=1))
-        #I wont' test the post objects per se here; I'll set tests for them in the ir respective directory; here I'm only setting some Post objects up to test pagination on the home page
+        #The testing here isn't for the 'Post' model; I'll set tests for that in the corresponding package directory; here I'm only setting some Post objects up to test pagination on the home page
     
-    def test_home_page_get_200_status_code(self):
-        response = self.client.get('/')
+    def test_home_page_get_200_status_code(self):  # see if the client gets a 200 HTTP response code, meaning success. 
+        response = self.client.get('/')  # the bare url pointing to the homepage
         self.assertEqual(response.status_code, 200)
 
     def test_homepage_reverse_url_by_name(self):
-        response = self.client.get(reverse('home'))
+        response = self.client.get(reverse('home'))   # 'home' is the name argument passed in the urlconf file based on which the url can be reconstructed. Test if it works as it should
         self.assertEqual(response.status_code, 200)
 
-    def test_homepage_correct_template_used(self):
+    def test_homepage_correct_template_used(self):    # check to see if the home.html template is used as expected
         response = self.client.get(reverse('home'))
         self.assertTemplateUsed(response, 'home.html')
 
@@ -47,7 +46,7 @@ class HomePageTests(TestCase):
         self.assertTrue(len(response.context['post_list'])==5)  # post_list is the context_object_name in the views file of the pages app
         
 
-    def test_homepage_pagination_two_posts_left_on_the_second_page(self):
+    def test_homepage_pagination_two_posts_left_on_the_second_page(self):   # check that 2/7 posts are indeed left over on page 2
         response = self.client.get(reverse('home')+'?page=2')
         self.assertEqual(response.status_code, 200)
         self.assertEquals(len(response.context['post_list']), 2)
@@ -62,10 +61,10 @@ class SearchPageView_tests(TestCase):
         Category.objects.create(cat_name="Somecategory")
         # this is necessary as it's required in the section foreign key field, so it has to be set up first
         User.objects.create(username="someuser", password="somepassword")
-        # same as above. Posts require an author field that can't be null
+        # same as above. Posts require an author field, which can't be null
         
         Post.objects.create(title="SomePost", body_text="this is some text", author=User.objects.get(id=1), section=Category.objects.get(id=1))
-        #setting a post object so that we can use the search function on a string from the body_text field in the Post object
+        #setting a post object so that we can use the search function on a string from its text_body field
                
     def test_search_page_get_200_status_code(self):
         response = self.client.get('/search/')
@@ -76,10 +75,10 @@ class SearchPageView_tests(TestCase):
         response = self.client.get(reverse('searched') + '?search=' + query_text)
         # the search url is supposed to look like '/search/?search=+some+text
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['search_results']), 1)  # if the searchh found any results - as it should, because the string used does exist - the length above should be 1. If it's 0. the search query failed
+        self.assertEqual(len(response.context['search_results']), 1)  # if the search found any results - as it should, because the string used does exist - the length above should be 1. If it's 0, the search query failed
 
 
-        #if successful: 
+
 
 class AboutPageView_tests(SimpleTestCase):
     def test_AboutPage_get_200_status_code(self):
@@ -95,7 +94,8 @@ class AboutPageView_tests(SimpleTestCase):
         response = self.client.get(reverse('about_page'))
         self.assertEqual(response.status_code, 200)
 
-        
+
+
 class ContactPageView_tests(SimpleTestCase):
     def test_ContactPage_get_200_status_code(self):
         response = self.client.get('/contact/')
