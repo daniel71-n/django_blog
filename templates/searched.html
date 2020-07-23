@@ -11,16 +11,12 @@
 
 <ul>
         {%for found in search_results%}
-        <li>
-		<a href="{{found.get_absolute_url}}">{{found.title}}</a><br>
+          <li>
+	  <a href="{{found.get_absolute_url}}">{{found.title}}</a><br>
 
-        </li>
-{%endfor%}
+          </li>
+	{%endfor%}
 </ul>
+
 {%endblock body%}
 
-{%block sidebar%}
-{%endblock sidebar%}
-{% block comments_section %}
-{%endblock comments_section %}
-}

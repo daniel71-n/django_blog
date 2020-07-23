@@ -8,15 +8,11 @@
 
 <ul>
 	{%for post in cat.post_set.all%} 
-	<li>
-		<a href="{{post.get_absolute_url}}">{{post}}</a> 
-	
-	</li>
-{%endfor%}
+	  <li>
+	  <a href="{{post.get_absolute_url}}">{{post}}</a> 
+	  </li>
+        {%endfor%}
 </ul>
+
 {%endblock body%}
 
-{%block sidebar%}
-{%endblock sidebar%}
-{% block comments_section %}
-{%endblock comments_section %}
