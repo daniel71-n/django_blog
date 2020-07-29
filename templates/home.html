@@ -7,25 +7,41 @@
 {% block body %}
 
 <div class="row justify-content-center">
-      <div class="col-12 col-sm-6">
+      <div class="col-12 col-sm-5">
     {% if is_paginated %}
         <div class="pagination">
             <span class="page-links">
                 {% if page_obj.has_previous %}
-		<a href="{{ request.path }}?page={{ page_obj.previous_page_number }}"><button class="btn btn-sm btn-outline-dark">previous</button></a>
+		<a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.previous_page_number }}"><button class="btn btn-sm btn-outline-dark">previous</button></a>
                 {% endif %}
                 <span class="page-current">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                 </span>
                 {% if page_obj.has_next %}
-		<a href="{{ request.path }}?page={{ page_obj.next_page_number }}"><button class="btn btn-sm btn-outline-dark">next</button></a>
+		<a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.next_page_number }}"><button class="btn btn-sm btn-outline-dark">next</button></a>
                 {% endif %}
             </span>
         </div>
     {% endif %}
       </div>
-</div>
+      <!--note the '?' above after the request.path variable. request.path is produced by urlencode in the view, but a '?' isn't appended, so that needs to be taken care of here-->
+  <div class="col-12 col-sm-2">
+<form id="sort_form" method="GET" action="" name="sort_options">
+  <label for="order">Order by:</label>
+  <select name="sort_options" id="sort_options" onChange="saveSelection();this.form.submit();">
+    <option value="most-recent" selected="selected">Most Recent First</option>
+    <option value="least-recent">Least Recent First</option>
+    <!--<option value="most-upvotes">Most Upvotes</option>
+    <option value="least-upvotes">Least Upvotes</option>-->
+ <option value="most-comments">Most Comments</option>
+ <option value="least-comments">Least Comments</option>
+   </select>
+  <br><br>
+</form>
 
+  </div>
+  </div>
+  <!--row holding the pagination and select list columns-->
 
 {% for p in post_list %}
 <div class="row justify-content-center">
@@ -35,7 +51,7 @@
       	      <br>
 	      <p> {{ p.body_text|truncatewords:55}} </p>
 	      <hr>
-	      <p> {% for item in p.tags.all%} <a href="{{ item.get_absolute_url }}"><button type="button" class="btn btn-dark btn-sm">{{item}}</button></a> {% endfor %}</p>
+	      <p id="tryit"> {% for item in p.tags.all%} <a href="{{ item.get_absolute_url }}"><button type="button" class="btn btn-dark btn-sm">{{item}}</button></a> {% endfor %}</p>
       </div>
 </div>
 
@@ -44,7 +60,41 @@
 <!--the url tag searches for and matches the 'name' argument passed to the path function in the url.py file-->
 
 
-
 {% endblock body %}
+
+
+{% block more_scripts %}
+
+
+<script>
+
+window.onload=restoreSelection();
+
+function saveSelection() {
+	try {
+	   var toset = document.getElementById("sort_options").value;
+	   sessionStorage.setItem('sort_option_selected', toset); // add a key-value pair to the localstorage dict. 
+	}
+	catch(err){
+		//alert(err);
+	  }
+}
+
+function restoreSelection() {
+if (sessionStorage.getItem('sort_option_selected')) {
+    var saved_selection = sessionStorage.getItem('sort_option_selected');
+    document.getElementById("sort_options").value = saved_selection;
+  }
+}
+
+/*use session storage, not localstorage. I can't explain the difference any better than Mozilla says it:
+	The sessionStorage property accesses a session Storage object for the current origin. sessionStorage is similar to localStorage; the difference is that while data in localStorage doesn't expire, data in sessionStorage is cleared when the page session ends.
+*/
+
+
+</script>
+{% endblock more_scripts %}
+
+
 
 
