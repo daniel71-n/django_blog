@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 from tags.models import Tags
+from ckeditor.fields import RichTextField
+
+
 # Create your models here.
 
 
@@ -42,7 +45,8 @@ class Category(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=150)
-    body_text = NonStrippingTextField()
+    #body_text = NonStrippingTextField()
+    body_text = RichTextField()   # use the ckeditor's wysiwyg admin interface
    
     author = models.ForeignKey(settings.AUTH_USER_MODEL,   #the FK here points to the built-in user model
         on_delete=models.CASCADE)

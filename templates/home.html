@@ -49,9 +49,9 @@
 	      <h2> <a href="{{p.get_absolute_url}}">{{ p.title }}</a></h2>
 	      <p> by {{ p.author }} | {{ p.publication_date }} | {{ p.get_reading_length }}</h3>
       	      <br>
-	      <p> {{ p.body_text|truncatewords:55}} </p>
+	      <p> {{ p.body_text|safe|striptags|truncatewords:55}} </p>
 	      <hr>
-	      <p id="tryit"> {% for item in p.tags.all%} <a href="{{ item.get_absolute_url }}"><button type="button" class="btn btn-dark btn-sm">{{item}}</button></a> {% endfor %}</p>
+	      <p>{% for item in p.tags.all%} <a href="{{ item.get_absolute_url }}"><button type="button" class="btn btn-dark btn-sm">{{item}}</button></a> {% endfor %}</p>
       </div>
 </div>
 

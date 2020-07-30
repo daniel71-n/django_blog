@@ -17,7 +17,7 @@
 {% block body %}
 <div class="row justify-content-center">
       <div class="col-12 detail-div col-sm-9">
-	      <p>{{post.body_text|linebreaks}}</p>
+	      <p>{{post.body_text|safe}}</p>
       </div>
 </div>
 

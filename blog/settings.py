@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'pages.apps.PagesConfig',
     'posts.apps.PostsConfig',
     'tags.apps.TagsConfig',
-    ]
+    'ckeditor']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
