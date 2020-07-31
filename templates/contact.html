@@ -7,15 +7,22 @@
 
 <div class="row justify-content-center">
       <div class="col-12 detail-div col-sm-9">
+              <p>You can get in touch by either shooting me an email at <span class='detail'><code>someemail@someemailprovider.com</code></span>
+or, alternatively, by filling out the form below:<br></p>
+<hr>
+<br>
+  <form action="" method="post">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Submit">
+    <br>
+    <br>
+  </form>
 
-<ul>
-<li><p>Email : someemail@someemailprovider.com</p> </li>
-<li>Phone : +someprefixsomenumber</li>
-</ul>
-
+      </div>
 </div>
-</div>
-
-
 {%endblock%}
-~                
+~
+                

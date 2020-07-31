@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.views.generic import TemplateView, ListView
-from posts.models import Post,Category
+from django.views.generic import TemplateView, ListView, CreateView
 from django.db.models import Count
+from django.urls import reverse_lazy
+
+
+from .models import Contact
+from posts.models import Post,Category
+from .forms import ContactForm
 
 # Create your views here.
 
@@ -80,5 +85,18 @@ class AboutPageView(TemplateView):
     template_name='about.html'
 
 
-class ContactPageView(TemplateView):
+class ContactPageView(CreateView):
+    model = Contact
+    fields = '__all__'
     template_name='contact.html'
+    #success_url = '/home/'
+    success_url = reverse_lazy('home')  # redirect to the home page upon successful submission of the form
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactPageView, self).get_context_data(**kwargs)
+        context['form'] = ContactForm
+        return context
+
+   
+
+	
