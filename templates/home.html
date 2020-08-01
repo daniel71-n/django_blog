@@ -5,30 +5,30 @@
 
 
 {% block body %}
-
 <div class="row justify-content-center">
       <div class="col-12 col-sm-5">
     {% if is_paginated %}
-        <div class="pagination">
+        <div class="pagination" id="pagination_div">
             <span class="page-links">
                 {% if page_obj.has_previous %}
-		<a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.previous_page_number }}"><button class="btn btn-sm btn-outline-dark">previous</button></a>
+		<a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.previous_page_number }}" onClick="return getPageQueryString(this);"><button class="btn btn-sm btn-outline-dark">previous</button></a>
                 {% endif %}
                 <span class="page-current">
                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                 </span>
                 {% if page_obj.has_next %}
-		<a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.next_page_number }}"><button class="btn btn-sm btn-outline-dark">next</button></a>
+                <a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.next_page_number }}" onClick="return getPageQueryString(this);"><button class="btn btn-sm btn-outline-dark">next</button></a>
                 {% endif %}
             </span>
         </div>
     {% endif %}
       </div>
       <!--note the '?' above after the request.path variable. request.path is produced by urlencode in the view, but a '?' isn't appended, so that needs to be taken care of here-->
+
   <div class="col-12 col-sm-2">
 <form id="sort_form" method="GET" action="" name="sort_options">
   <label for="order">Order by:</label>
-  <select name="sort_options" id="sort_options" onChange="saveSelection();this.form.submit();">
+  <select name="sort_options" id="sort_options" onChange="ajaxSort();">
     <option value="most-recent" selected="selected">Most Recent First</option>
     <option value="least-recent">Least Recent First</option>
     <!--<option value="most-upvotes">Most Upvotes</option>
@@ -43,6 +43,10 @@
   </div>
   <!--row holding the pagination and select list columns-->
 
+
+
+<div id="to_be_replaced">
+
 {% for p in post_list %}
 <div class="row justify-content-center">
       <div class="col-12 col-sm-6 homecards">
@@ -55,10 +59,9 @@
       </div>
 </div>
 
-
 {% endfor %}
 <!--the url tag searches for and matches the 'name' argument passed to the path function in the url.py file-->
-
+</div>
 
 {% endblock body %}
 
@@ -66,30 +69,114 @@
 {% block more_scripts %}
 
 
+
+
 <script>
 
-window.onload=restoreSelection();
-
-function saveSelection() {
-	try {
-	   var toset = document.getElementById("sort_options").value;
-	   sessionStorage.setItem('sort_option_selected', toset); // add a key-value pair to the localstorage dict. 
-	}
-	catch(err){
-		//alert(err);
-	  }
+function getURL(){
+//retrieve the current URL path; --> the whole URL first, potential querystrings included, then get the path by discarding everything after the '?' 
+try{
+var url = window.location
+var urlPathOnly = url.toString().split('?')[0];
+  }
+catch(err){
+//alert(err);
+  }
+return urlPathOnly 
 }
 
-function restoreSelection() {
-if (sessionStorage.getItem('sort_option_selected')) {
-    var saved_selection = sessionStorage.getItem('sort_option_selected');
-    document.getElementById("sort_options").value = saved_selection;
+function getSortOption(){
+//get the otpion that's been selected in the selectlist element
+var option = document.getElementById("sort_options").value;
+return option
+}
+
+
+function getPageQueryString(val){
+//the href attribute of the 'a' element wrapped around each of the page buttons (actually, the html for the whole section) is updated on each AJAX operation, so it's always aware if it's paginating a queryset that has been re-sorted or not
+var pageQuery = val.toString();  
+ajaxSort(pageQuery);
+return false  
+ // the function needs to return False in order to prevent the link being clicked on from firing, since this function is the callback called on the 'onClick' event by the handler.
+ // if this weren't so, the link would still send out its associated query string when clicked, precluding the AJAX call
+}
+
+
+function ajaxSort(arg=null) {
+//it takes a single argument with a default value of null; 
+//its purpose is to determine how the function should proceed depending on whether it's being called by a page button having been clicked, or by a sorting option having been selected
+//if the arg is null, it's the latter; if it's something else (the 'querystring' that precedes the pagination query string), then it's the forme, and certain different sub-actions need to be taken for each
+var queryString = '';
+
+try{
+if (arg==null) {
+  queryString = getURL();
+  var sort_option = getSortOption();
+  queryString = queryString+"?&sort_options="+sort_option;
+  var sort_query = "?&sort_options=" + sort_option;
+  }
+else if (arg != null) {
+  queryString = arg;
+  }  
+}
+catch(err){
+//alert(err);
+ }
+
+
+const articleCards_to_replace = document.getElementById("to_be_replaced");
+const paginationDiv_to_replace = document.getElementById("pagination_div");
+
+
+var request = new XMLHttpRequest();
+
+request.onreadystatechange = function() {
+  if(request.readyState === 4) {
+    
+    if(request.status === 200) {
+       try{
+
+
+var replacementsArray = request.responseText.split('<!---->');
+//I explicitly put the set of characters shown in parentheses above in the 'cards.html' document so that I could divide the text in 2: pagination html, used to update the pagination section, and html meant to replace the article 'cards' in the body
+//alert(replacementsArray);
+const pagination_div_replacement = replacementsArray[0];
+const article_cards_replacement = replacementsArray[1];
+
+paginationDiv_to_replace.innerHTML = pagination_div_replacement;
+articleCards_to_replace.innerHTML = article_cards_replacement;
+}
+catch(err){
+//alert(err);
+      }
+
+  }
+    else {
+      toBeReplaced.innerHTML = 'An error occurred during your request: ' +  request.status + ' ' + request.statusText;
+    }
   }
 }
+ 
+request.open('Get', queryString);
+try{
+request.setRequestHeader('X-REQUESTED-WITH', 'XMLHttpRequest');
+}
+catch(err){
+//alert(err);
+} 
 
-/*use session storage, not localstorage. I can't explain the difference any better than Mozilla says it:
-	The sessionStorage property accesses a session Storage object for the current origin. sessionStorage is similar to localStorage; the difference is that while data in localStorage doesn't expire, data in sessionStorage is cleared when the page session ends.
-*/
+request.send();
+
+}
+
+
+
+
+
+
+
+
+
 
 
 </script>

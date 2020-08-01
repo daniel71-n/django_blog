@@ -1,12 +1,11 @@
 # pages/urls.py
 from django.urls import path
 
-from .views import HomePageView, AboutPageView, ContactPageView, SearchView
+from .views import HomeAjaxView, AboutPageView, ContactPageView, SearchView
 
 urlpatterns = [
-    #path('', homePageView, name='home')
-    path('', HomePageView.as_view(), name='home'),
-    path('home/', HomePageView.as_view(), name='home_verbose'),
+    path('', HomeAjaxView, name='home'),
+    path('home/', HomeAjaxView, name='home_verbose'),
     path('search/', SearchView.as_view(), name='searched'),
     path('about/', AboutPageView.as_view(), name='about_page'),
     path('contact/', ContactPageView.as_view(), name='contact_page'),
