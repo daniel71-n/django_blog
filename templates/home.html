@@ -44,6 +44,15 @@
   <!--row holding the pagination and select list columns-->
 
 
+<div class="row justify-content-center">
+      <div class="col-12 col-sm-6 homecards">
+          <h5 id="cat_div_heading"><a id="cat_heading_a">Categories</a> <i id="arrow-sign" class="arrow right"></i></h5><hr>
+          <p id= "categoryList" class='hidden'>
+          {%for cat, post_num in categories.items %}<a href="{{cat.get_absolute_url}}">{{cat}}</a> ({{post_num}})<br> 
+          {%endfor%}</p>
+      </div>
+</div>
+
 
 <div id="to_be_replaced">
 
@@ -72,6 +81,32 @@
 
 
 <script>
+
+document.getElementById("cat_div_heading").addEventListener("click", function() {
+ // alert('works');
+    try{
+        var elem = document.getElementById("categoryList");
+        var arrow = document.getElementById("arrow-sign");
+        //alert(elem);
+        
+        if (elem.classList.contains("hidden")){
+            elem.classList.remove("hidden");
+            arrow.classList.remove("right");
+            arrow.classList.add("down");
+        }
+        else{
+            elem.classList.add("hidden");
+            arrow.classList.remove("down");
+            arrow.classList.add("right");
+        }
+    }
+    catch(err){
+        alert(err);
+    }
+}
+)
+
+
 
 function getURL(){
 //retrieve the current URL path; --> the whole URL first, potential querystrings included, then get the path by discarding everything after the '?' 

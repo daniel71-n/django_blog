@@ -97,8 +97,9 @@ def HomeAjaxView(request):
         # Also include all the category names on the website in the context
         context = {}
         POST_LIST, IS_PAGINATED = get_page()   # call get_page to determine if there is pagination and if so get the queryset paginated
-
-        context['categories'] = Category.objects.all()
+     
+        context['categories'] = {cat : cat.post_set.count() for cat in Category.objects.all() if cat.post_set.count()>0}
+        # return only those categories that are associated with at least one Post object 
         context['post_list'] = POST_LIST
         context['is_paginated'] = IS_PAGINATED
         context['page_obj'] = POST_LIST  #page_obj and post_list point to the same object, because post_list is actually a page object, the result of a paginated queryset
