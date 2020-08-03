@@ -15,6 +15,30 @@
 
 
 {% block body %}
+
+<!-- ----------------------    Next/Previous     -----------------------  -->
+<div class="row justify-content-center">
+      <div class="col-6 col-sm-5 previous-page">
+          {%if previous %}
+          <h5 id="cat_div_heading"><a href="{{previous.get_absolute_url}}"><i id="arrow-sign" class="arrow left"></i>Previous</a></h5>
+        {%endif%}
+      </div>
+      
+      <div class="col-6 col-sm-5 next-page">
+         {%if next %}
+         <h5 id="cat_div_heading"><a href="{{next.get_absolute_url}}">Next</a><i id="arrow-sign" class="arrow right"></i></h5>
+         {%endif%}
+         </div>
+        </div>
+
+
+
+
+
+
+
+
+
 <div class="row justify-content-center">
       <div class="col-12 detail-div col-sm-9">
 	      <p>{{post.body_text|safe}}</p>
