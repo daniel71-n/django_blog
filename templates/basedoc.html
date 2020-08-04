@@ -12,6 +12,9 @@
 
 
 <style>
+
+
+
 .container-fluid{
 /*background-color: gray;
 padding: 20%;*/
@@ -91,7 +94,7 @@ list-style-type : square;
 .detail-div{
 background-color: #ffe0b3;
 padding-left: 4em;
-padding-right: 2em;
+padding-right: 4em;     /* to be overridden in a media query for phone screen size media */
 border-left: 5px #ffad33 solid;
 padding-top:1em;
 }
@@ -102,6 +105,23 @@ padding-left:3em;
 padding-bottom:3em;
 padding-top:3em;
 }
+
+/*about 800px is the size my phone's screen when held horizontally*/
+@media (min-width: 800px) {
+p{
+font-size: 18px;
+}
+}
+
+@media (max-width: 800px) {
+.detail-div{
+padding-left: 1em;
+padding-right: 1em;     
+}
+}
+
+
+
 
 </style>
   </head>
