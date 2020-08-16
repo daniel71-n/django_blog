@@ -1,0 +1,16 @@
+<div class="pagination" id="pagination_div">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+
+                <a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.previous_page_number }}" onClick="return getPageQueryString(this);"><button class="btn btn-sm btn-outline-dark">previous</button></a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                <a href="{{ request.path }}?{{sort_query_string}}&page={{ page_obj.next_page_number }}" onClick="return getPageQueryString(this);"><button class="btn btn-sm btn-outline-dark">next</button></a>
+                {% endif %}
+            </span>
+        </div>
+
+
