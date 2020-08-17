@@ -1,0 +1,105 @@
+.container-fluid{
+/*background-color: gray;
+padding: 20%;*/
+}
+
+.detail{
+background-color: #e3e6e5;
+}
+
+a#cat_heading_a{
+cursor:pointer;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.hidden{
+display: none; 
+}
+
+.next-page{
+text-align: right;
+}
+
+.previous-page{
+text-align:left;
+}
+
+.body-column{
+background-color: white; 
+padding:3em;
+}
+
+.homecards{
+background-color: #AEFF95;
+margin-left: 4px;
+margin-top: 1em;
+padding-left: 2em;
+padding-top: 1em;
+border-left: 2px solid black;
+}
+
+.comment-div{
+border-left: 4px black solid;
+margin-top:2em;
+padding-top: 1px;
+background-color: white #dcff85;
+}
+
+.show-hide{
+display: none; /*This so that the comments start off hidden, as opposed to showing up from the beginning; --> this is for the jquery button bit */
+}
+
+ul{
+list-style-type : square;
+}
+
+.detail-div{
+background-color: #ffe0b3;
+padding-left: 4em;
+padding-right: 4em;     /* to be overridden in a media query for phone screen size media */
+border-left: 5px #ffad33 solid;
+padding-top:1em;
+}
+
+.row-at-the-top{
+background-color: gray; 
+padding-left:3em;
+padding-bottom:3em;
+padding-top:3em;
+}
+
+/*about 800px is the size my phone's screen when held horizontally*/
+@media (min-width: 800px) {
+p{
+font-size: 18px;
+}
+}
+
+@media (max-width: 800px) {
+.detail-div{
+padding-left: 1em;
+padding-right: 1em;     
+}
+}
+
